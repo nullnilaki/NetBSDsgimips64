@@ -3,9 +3,10 @@
 PROG=	ip30boot
 NOMAN=	# defined
 
-SRCS=	start.S boot.c bootinfo.c conf.c devopen.c putchar.c getchar.c \
-	getopt.c disk.c arcbios_calls.S
+#SRCS=	start_octane.S boot.c bootinfo.c conf.c devopen.c putchar.c getchar.c \
+#	getopt.c disk.c arcbios_calls.S
 
+SRCS=	start_octane.S boot_octane.c arcbios_calls.S
 
 CLEANFILES+=	boot.map
 
@@ -24,14 +25,11 @@ AFLAGS+=	-D_LOCORE -D_KERNEL -mno-abicalls -mabi=64 -D_LP64
 CPPFLAGS+=	-nostdinc -D_STANDALONE -DNO_ABICALLS -I${.OBJDIR} -I${S}
 # compiler flags for smallest code size
 CFLAGS=		-ffreestanding -Os -Wall -Werror -mno-abicalls -msoft-float -G 1024 -mabi=64 -D_LP64
+
 LDBUG=		-T $S/arch/mips/conf/stand.ldscript
-NETBSD_VERS!=	${HOST_SH} ${.CURDIR}/../../../../conf/osrelease.sh
-CPPFLAGS+=	-DNETBSD_VERS='"${NETBSD_VERS}"'
 
-CPPFLAGS+=	-Dsgimips
-
-LDFLAGS+=       -m elf64btsmip
-LINKFORMAT+=    -m elf64btsmip
+LDFLAGS+=       -m elf64-tradbigmips
+LINKFORMAT+=    -m elf64-tradbigmips
 
 .include "${S}/dev/arcbios/Makefile.inc"
 
@@ -39,7 +37,8 @@ LINKFORMAT+=    -m elf64btsmip
 # loader plenty of breathing room.  Load the boot loader starting at
 # the second page of RAM.
 
-LOAD_ADDRESS_IP30?=	0xa800000020080000
+LOAD_ADDRESS_IP30=	0xa800000020020000
+
 
 ### find out what to use for libkern
 KERN_AS=	library
@@ -63,17 +62,15 @@ LIBSA=		${SALIB}
 
 LIBS=		${LIBSA} ${LIBZ} ${LIBSA} ${LIBKERN}
 
+
 ip30boot: ${OBJS} ${LIBS}
 	${_MKTARGET_LINK}
 	${LD} -m elf64btsmip -Map boot.map -x -Ttext ${LOAD_ADDRESS_IP30} \
 		${LDBUG} -e start -o ${.TARGET} ${OBJS} ${LIBS}
-	${SIZE} ${.TARGET}
 
 cleandir distclean: .WAIT cleanlibdir
 cleanlibdir:
 	-rm -rf lib
-
-.include "${S}/conf/newvers_stand.mk"
 
 .include <bsd.klinks.mk>
 .include <bsd.prog.mk>
