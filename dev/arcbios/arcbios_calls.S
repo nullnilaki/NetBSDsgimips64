@@ -118,9 +118,9 @@ END(arcbios_5to8_args)
 #define AFVDIRECT(name)						\
 	.globl	__CONCAT(arcbios_,name);			\
 LEAF(__CONCAT(arcbios_,name));					\
-	PTR_L	t9, _C_LABEL(ARCBIOS); 				\
-	 nop;							\
-	INT_L	t9, __CONCAT(AFV_,name)(t9);			\
+	PTR_L	t9, _C_LABEL(ARCBIOS); \
+	nop;  \
+	ld	t9, __CONCAT(AFV_,name)(t9);			\
 	 nop;							\
 	jr	t9;						\
 	 nop;							\
@@ -144,6 +144,15 @@ NESTED(__CONCAT(arcbios_,name), 0, ra);				\
 	 li	t0, __CONCAT(AFV_,name);			\
 END(__CONCAT(arcbios_,name))
 #endif
+
+LEAF(octanerestart)
+	dla $2, 0xffffffff80001000
+	ld  $3, 2*0x20($2)
+	ld  $2, 2*0x18($3)
+	jr  $2
+	nop
+END(octanerestart)
+
 
 /*
  * ARC firmware vector

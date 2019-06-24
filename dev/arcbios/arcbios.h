@@ -316,6 +316,8 @@ struct arcbios_dsp_stat {
 	uint8_t		ReverseVideo;
 };
 
+
+#if 0
 /*
  * ARC firmware vector
  */
@@ -358,6 +360,49 @@ struct arcbios_fv {
 	int32_t		TestUnicode;		/* not on sgimips */
 	int32_t		GetDisplayStatus;	/* not on sgimips */
 };
+#endif
+
+
+struct arcbios_fv {
+	u_long		Load;
+	u_long		Invoke;
+	u_long		Execute;
+	u_long		Halt;
+	u_long		PowerDown;
+	u_long		Restart;
+	u_long		Reboot;
+	u_long		EnterInteractiveMode;
+	u_long		ReturnFromMain;		/* not on sgimips */
+	u_long		GetPeer;
+	u_long		GetChild;
+	u_long		GetParent;
+	u_long		GetConfigurationData;
+	u_long		AddChild;
+	u_long		DeleteComponent;
+	u_long		GetComponent;
+	u_long		SaveConfiguration;
+	u_long		GetSystemId;
+	u_long		GetMemoryDescriptor;
+	u_long		Signal;			/* not on sgimips */
+	u_long		GetTime;
+	u_long		GetRelativeTime;
+	u_long		GetDirectoryEntry;
+	u_long		Open;
+	u_long		Close;
+	u_long		Read;
+	u_long		GetReadStatus;
+	u_long		Write;
+	u_long		Seek;
+	u_long		Mount;
+	u_long		GetEnvironmentVariable;
+	u_long		SetEnvironmentVariable;
+	u_long		GetFileInformation;
+	u_long		SetFileInformation;
+	u_long		FlushAllCaches;
+	u_long		TestUnicode;		/* not on sgimips */
+	u_long		GetDisplayStatus;	/* not on sgimips */
+};
+
 
 #if defined(_KERNEL) || defined(_STANDALONE)
 /*
