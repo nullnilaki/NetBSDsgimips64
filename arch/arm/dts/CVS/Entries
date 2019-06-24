@@ -1,0 +1,20 @@
+/rk3328-rock64.dts/1.1/Thu Jun 21 10:46:39 2018//D2019.01.10.00.00.00
+/rk3328.dtsi/1.1/Thu Jun 21 10:46:39 2018//D2019.01.10.00.00.00
+/rk3399-rockpro64.dts/1.1/Sun Aug 12 18:01:03 2018//D2019.01.10.00.00.00
+/socfpga_cyclone5_de0_nano_soc.dts/1.1/Sat Jan  5 13:55:46 2019//D2019.01.10.00.00.00
+/sun50i-a64-pine64-plus.dts/1.2/Sat Sep  9 12:05:28 2017//D2019.01.10.00.00.00
+/sun50i-a64-pine64.dts/1.1/Sun Feb 18 12:20:25 2018//D2019.01.10.00.00.00
+/sun50i-a64-pinebook.dts/1.13/Sun Nov 11 11:44:53 2018//D2019.01.10.00.00.00
+/sun50i-a64-sopine-baseboard.dts/1.1/Thu Jun  7 00:51:41 2018//D2019.01.10.00.00.00
+/sun50i-a64.dtsi/1.9/Fri May 11 00:00:04 2018//D2019.01.10.00.00.00
+/sun50i-h5-nanopi-neo-plus2.dts/1.3/Mon Jul  2 17:13:15 2018//D2019.01.10.00.00.00
+/sun50i-h5.dtsi/1.1/Sun Jan 28 18:31:15 2018//D2019.01.10.00.00.00
+/sun5i-r8-pocketchip.dts/1.1/Sun Aug 27 02:20:49 2017//D2019.01.10.00.00.00
+/sun8i-a83t-bananapi-m3.dts/1.2/Sat Jun 30 12:23:24 2018//D2019.01.10.00.00.00
+/sun8i-a83t.dtsi/1.3/Wed Jan  2 19:34:32 2019//D2019.01.10.00.00.00
+/sun8i-h3-nanopi-m1.dts/1.2/Fri Dec 22 13:27:29 2017//D2019.01.10.00.00.00
+/sun8i-h3-nanopi-neo.dts/1.3/Thu Nov 30 21:36:45 2017//D2019.01.10.00.00.00
+/sun8i-h3-orangepi-one.dts/1.3/Thu Nov 30 21:39:35 2017//D2019.01.10.00.00.00
+/sun8i-h3-orangepi-plus2e.dts/1.3/Thu Nov 30 21:36:45 2017//D2019.01.10.00.00.00
+/sun8i-h3.dtsi/1.6/Thu Nov 30 21:36:45 2017//D2019.01.10.00.00.00
+D

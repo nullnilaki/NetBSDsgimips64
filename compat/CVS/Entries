@@ -1,0 +1,18 @@
+/Makefile/1.6/Sat Dec 29 11:30:12 2018//D2019.01.10.00.00.00
+/Makefile.syscall/1.3/Sat Dec 29 11:30:12 2018//D2019.01.10.00.00.00
+D/aoutm68k////
+D/common////
+D/freebsd////
+D/linux////
+D/linux32////
+D/m68k4k////
+D/net////
+D/netbsd32////
+D/netinet6////
+D/osf1////
+D/ossaudio////
+D/sunos////
+D/sunos32////
+D/sys////
+D/ultrix////
+D/vax1k////

@@ -1,0 +1,13 @@
+/Makefile/1.6/Tue May 29 16:53:56 2018//D2019.01.10.00.00.00
+/Makefile.inc/1.1/Wed May 13 07:07:36 2015//D2019.01.10.00.00.00
+/README/1.8/Tue May 29 16:53:56 2018//D2019.01.10.00.00.00
+D/executor////
+D/hello////
+D/luahello////
+D/luareadhappy////
+D/panic_string////
+D/ping////
+D/properties////
+D/readhappy////
+D/readhappy_mpsafe////
+D/sysctl////
