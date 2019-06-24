@@ -1,7 +1,7 @@
 #include <sys/param.h>
 
 /* iris_start.S */
-void romrestart(void);
+void octanerestart(void);
 
 #define DELAY(n)							\
 do {									\

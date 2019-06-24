@@ -8,7 +8,7 @@ int
 main(void)
 {
 	arcbios_Reboot();
-	//romrestart();
+	//octanerestart();
 	return 0;
 #if 0
 	u_long io3c_base;
