@@ -7,7 +7,7 @@ int main(void);
 int
 main(void)
 {
-	arcbios_Reboot();
+	arcbios_Restart();
 	//octanerestart();
 	return 0;
 #if 0

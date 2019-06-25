@@ -364,43 +364,43 @@ struct arcbios_fv {
 
 
 struct arcbios_fv {
-	u_long		Load;
-	u_long		Invoke;
-	u_long		Execute;
+	long		Load;
+	long		Invoke;
+	long		Execute;
 	u_long		Halt;
 	u_long		PowerDown;
 	u_long		Restart;
 	u_long		Reboot;
 	u_long		EnterInteractiveMode;
-	u_long		ReturnFromMain;		/* not on sgimips */
-	u_long		GetPeer;
-	u_long		GetChild;
-	u_long		GetParent;
-	u_long		GetConfigurationData;
-	u_long		AddChild;
-	u_long		DeleteComponent;
-	u_long		GetComponent;
-	u_long		SaveConfiguration;
-	u_long		GetSystemId;
-	u_long		GetMemoryDescriptor;
-	u_long		Signal;			/* not on sgimips */
-	u_long		GetTime;
+	int32_t		ReturnFromMain;		/* not on sgimips */
+	vaddr_t		GetPeer;
+	vaddr_t		GetChild;
+	vaddr_t		GetParent;
+	long		GetConfigurationData;
+	vaddr_t		AddChild;
+	long		DeleteComponent;
+	vaddr_t		GetComponent;
+	long		SaveConfiguration;
+	vaddr_t		GetSystemId;
+	vaddr_t		GetMemoryDescriptor;
+	long		Signal;			/* not on sgimips */
+	vaddr_t		GetTime;
 	u_long		GetRelativeTime;
-	u_long		GetDirectoryEntry;
-	u_long		Open;
-	u_long		Close;
-	u_long		Read;
-	u_long		GetReadStatus;
-	u_long		Write;
-	u_long		Seek;
-	u_long		Mount;
-	u_long		GetEnvironmentVariable;
-	u_long		SetEnvironmentVariable;
-	u_long		GetFileInformation;
-	u_long		SetFileInformation;
-	u_long		FlushAllCaches;
-	u_long		TestUnicode;		/* not on sgimips */
-	u_long		GetDisplayStatus;	/* not on sgimips */
+	long		GetDirectoryEntry;
+	long		Open;
+	long		Close;
+	long		Read;
+	long		GetReadStatus;
+	long		Write;
+	long		Seek;
+	long		Mount;
+	vaddr_t		GetEnvironmentVariable;
+	long		SetEnvironmentVariable;
+	long		GetFileInformation;
+	long		SetFileInformation;
+	vaddr_t		FlushAllCaches;
+	long		TestUnicode;		/* not on sgimips */
+	long		GetDisplayStatus;	/* not on sgimips */
 };
 
 
