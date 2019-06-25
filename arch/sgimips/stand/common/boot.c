@@ -131,10 +131,15 @@ main(int argc, char **argv)
 	int             ch;
 
 	/* print a banner */
-	printf("\n");
-	printf("%s " NETBSD_VERS " Bootstrap, Revision %s\n",
-	    bootprog_name, bootprog_rev);
-	printf("\n");
+    printf("\n");
+    printf("NetBSD Sgimips64 Bootstrap\n");
+    printf("\n");
+
+	struct arcbios_sysid *sid;
+	sid = arcbios_GetSystemId();
+	printf("sid->VendorId = %s\n", sid->VendorId);
+
+    arcbios_Restart();
 
 	memset(marks, 0, sizeof marks);
 
