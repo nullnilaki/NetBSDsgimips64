@@ -145,15 +145,6 @@ NESTED(__CONCAT(arcbios_,name), 0, ra);				\
 END(__CONCAT(arcbios_,name))
 #endif
 
-LEAF(octanerestart)
-	dla $2, 0xffffffff80001000
-	ld  $3, 2*0x20($2)
-	ld  $2, 2*0x18($3)
-	jr  $2
-	nop
-END(octanerestart)
-
-
 /*
  * ARC firmware vector
  */

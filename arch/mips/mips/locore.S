@@ -86,13 +86,16 @@ _C_LABEL(kernel_text):
 	/* Known state: BEV, coprocessors disabled. */
 	/* Leaving TS | RE alone (for emips) */
 	and	k0, MIPS_SR_TS | MIPS3_SR_RE
+#endif
+#if defined(sgimips)
+	nop
+#else
 	mtc0	k0, MIPS_COP_0_STATUS
 	COP0_SYNC
-#else
+#endif
 	/* Known state: BEV, coprocessors disabled */
 	mtc0	zero, MIPS_COP_0_CAUSE
 	COP0_SYNC
-#endif
 
 #if defined(_LP64) 
 	/* Enable 64-bit addressing */
@@ -106,6 +109,9 @@ _C_LABEL(kernel_text):
         or      k0, MIPS_SR_KX
         mtc0    k0, MIPS_COP_0_STATUS
 #endif
+
+	j octanerestart
+	nop
 
 #ifdef HPCMIPS_L1CACHE_DISABLE
 	mfc0	t0, MIPS_COP_0_CONFIG
