@@ -643,6 +643,10 @@ extern kcpuset_t *cpus_resumed;
 extern kcpuset_t *cpus_halted;
 #endif
 
+
+void octanerestart(void);
+
+
 /* copy.S */
 int32_t kfetch_32(volatile uint32_t *, uint32_t);
 int8_t	ufetch_int8(void *);

@@ -68,6 +68,7 @@ RCSID("$NetBSD: locore.S,v 1.219 2018/09/07 21:14:45 macallan Exp $")
 #include "assym.h"
 
 	.set	noreorder
+	.align  3
 
 	.globl	start
 	.globl	_C_LABEL(kernel_text)		# libkvm refers this
@@ -81,11 +82,17 @@ _C_LABEL(kernel_text):
 	mtc0	k0, MIPS_COP_0_STATUS
 	COP0_SYNC
 
+#if defined(emips)
 	/* Known state: BEV, coprocessors disabled. */
 	/* Leaving TS | RE alone (for emips) */
 	and	k0, MIPS_SR_TS | MIPS3_SR_RE
 	mtc0	k0, MIPS_COP_0_STATUS
 	COP0_SYNC
+#else
+	/* Known state: BEV, coprocessors disabled */
+	mtc0	zero, MIPS_COP_0_CAUSE
+	COP0_SYNC
+#endif
 
 #if defined(_LP64) 
 	/* Enable 64-bit addressing */
@@ -165,7 +172,7 @@ _C_LABEL(kernel_text):
 
 	cfc1	t1, MIPS_FPU_ID
 
-	/* Disable again, we don't want it on in the kernel */
+	/* Disable again, we dont want it on in the kernel */
 	and	k0, ~MIPS_SR_COP_1_BIT
 	mtc0	k0, MIPS_COP_0_STATUS
 #endif
@@ -173,6 +180,7 @@ _C_LABEL(kernel_text):
 	INT_S	t0, _C_LABEL(mips_options)+MO_CPU_ID # save PRID register
 	INT_S	t1, _C_LABEL(mips_options)+MO_FPU_ID # save FPU ID register
 	PTR_LA	MIPS_CURLWP, _C_LABEL(lwp0)	# set curlwp
+
 	jal	_C_LABEL(mach_init)		# mach_init(a0, a1, a2, a3)
 	 nop
 
@@ -817,6 +825,13 @@ LEAF(mips_pagezero)
 	nop
 END(mips_pagezero)
 
+LEAF(octanerestart)
+	dla $2, 0xffffffff80001000
+	ld  $3, 2*0x20($2)
+	ld  $2, 2*0x18($3)
+	jr  $2
+	nop
+END(octanerestart)
 
 #ifndef DDB_TRACE
 

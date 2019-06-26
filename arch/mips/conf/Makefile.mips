@@ -55,8 +55,8 @@ AFLAGS.fp.S+=		-Wa,-mhard-float
 CFLAGS+=	${GP} -mno-abicalls -msoft-float -ffixed-24
 .if defined(LP64) && ${LP64} == "yes"
 .if ${MACHINE_ARCH} == "mips64eb" || ${MACHINE_ARCH} == "mips64el"
-CFLAGS+=	-msym32 -mabi=64
-AFLAGS+=	-msym32 -mabi=64
+CFLAGS+=	-mabi=64
+AFLAGS+=	-mabi=64
 .endif
 .if ${MACHINE_ARCH} == "mips64eb"
 LDFLAGS+=	-Wl,-m,elf64btsmip
