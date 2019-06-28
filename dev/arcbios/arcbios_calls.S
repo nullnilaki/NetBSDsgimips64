@@ -49,28 +49,26 @@ RCSID("$NetBSD: arcbios_calls.S,v 1.1 2011/02/20 08:02:46 matt Exp $")
 
 #ifndef _STANDALONE
 NESTED(arcbios_4orless_args, CALLFRAME_SIZ, ra)
-	PTR_SUBU sp, CALLFRAME_SIZ
+	PTR_SUBU sp, (CALLFRAME_SIZ * 2)
 
-	REG_S	ra, CALLFRAME_RA(sp)
-	REG_S	s0, CALLFRAME_S0(sp)
+	REG_S	ra, CALLFRAME_RA * 2(sp)
+	REG_S	s0, CALLFRAME_S0 * 2(sp)
 
 	PTR_L	t9, _C_LABEL(ARCBIOS)
 	PTR_ADDU t9, t0
-	INT_L	t9, 0(t9)
+	ld	t9, 0(t9)
 	nop
 
 	jalr	t9
 	 move	s0, t8
 
-	FIX_V0
-
 	move	t8, s0
 
-	REG_L	ra, CALLFRAME_RA(sp)
-	REG_L	s0, CALLFRAME_S0(sp)
+	REG_L	ra, CALLFRAME_RA * 2(sp)
+	REG_L	s0, CALLFRAME_S0 * 2(sp)
 
 	jr	ra
-	 PTR_ADDU sp, CALLFRAME_SIZ
+	 PTR_ADDU sp, (CALLFRAME_SIZ * 2)
 END(arcbios_4orless_args)
 
 NESTED(arcbios_5to8_args, CALLFRAME2_SIZ, ra)

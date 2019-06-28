@@ -3,10 +3,10 @@
 PROG=	ip30boot
 NOMAN=	# defined
 
-SRCS=	start_octane.S boot.c bootinfo.c conf.c devopen.c putchar.c getchar.c \
-	getopt.c disk.c arcbios_calls.S
+#SRCS=	start_octane.S boot.c bootinfo.c conf.c devopen.c putchar.c getchar.c \
+#	getopt.c disk.c arcbios_calls.S
 
-#SRCS=	start_octane.S boot_octane.c arcbios_calls.S
+SRCS=	start_octane.S boot_octane.c arcbios_calls.S
 
 CLEANFILES+=	boot.map
 
@@ -21,7 +21,7 @@ realall: ${PROG}
 
 .PATH:		${.CURDIR}/../common
 .PATH.S:	${S}/dev/arcbios
-AFLAGS+=	-D_LOCORE -D_KERNEL -mno-abicalls -mabi=64 -D_LP64
+AFLAGS+=	-D_LOCORE -D_KERNEL -mno-abicalls -mabi=64 -D_LP64 -march=mips4 -mtune=r10000
 CPPFLAGS+=	-nostdinc -D_STANDALONE -DNO_ABICALLS -I${.OBJDIR} -I${S}
 # compiler flags for smallest code size
 CFLAGS=		-ffreestanding -Os -Wall -Werror -mno-abicalls -msoft-float -G 1024 -mabi=64 -D_LP64

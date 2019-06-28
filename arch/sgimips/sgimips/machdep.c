@@ -226,7 +226,11 @@ uint8_t *bootinfo;			/* pointer to bootinfo structure */
 static uint8_t bi_buf[BOOTINFO_SIZE];	/* buffer to store bootinfo data */
 static const char *bootinfo_msg = NULL;
 
+#define CKSEG0_BASE     0xffffffff80000000UL
+#define PHYS_TO_CKSEG0(x)   ((u_long)(x) | CKSEG0_BASE)
+
 #define ARCS_VECTOR MIPS_PHYS_TO_KSEG0(0x00001000)
+#define ARCS_VECTOR64 PHYS_TO_CKSEG0(0x00001000)
 
 /*
  * Do all the stuff that locore normally does before calling main().
@@ -262,7 +266,6 @@ mach_init(int argc, int32_t argv32[], uintptr_t magic, int32_t bip32)
 #else
 	char **argv = (void *)argv32;
 #endif
-
 	/*
 	 * Initialize firmware.  This will set up the bootstrap console.
 	 * At this point we do not yet know the machine type, so we
@@ -273,7 +276,7 @@ mach_init(int argc, int32_t argv32[], uintptr_t magic, int32_t bip32)
 	 * The third argument (magic) is the environment variable array if
 	 * there's no bootinfo.
 	 */
-	if (arcbios_init(ARCS_VECTOR) == 1) {
+	if (arcbios_init(ARCS_VECTOR64) == 1) {
 #ifdef _LP64
 		panic("no ARCS firmware");
 #else

@@ -77,6 +77,7 @@
 /*
  * 4.2.2: System Parameter Block
  */
+#if 0
 struct arcbios_spb {
 	uint32_t	SPBSignature;
 	uint32_t	SPBLength;
@@ -94,6 +95,26 @@ struct arcbios_spb {
 	uint32_t	AdapterType;
 	uint32_t	AdapterVectorLength;
 	int32_t		AdapterVector;
+};
+#endif
+
+struct arcbios_spb {
+	uint64_t	SPBSignature;
+	uint64_t	SPBLength;
+	uint16_t	Version;
+	uint16_t	Revision;
+	int64_t		RestartBlock;
+	int64_t		DebugBlock;
+	int64_t		GEVector;
+	int64_t		UTLBMissVector;
+	uint64_t	FirmwareVectorLength;
+	int64_t		FirmwareVector;
+	uint64_t	PrivateVectorLength;
+	int64_t		PrivateVector;
+	uint64_t	AdapterCount;
+	uint64_t	AdapterType;
+	uint64_t	AdapterVectorLength;
+	int64_t		AdapterVector;
 };
 
 #define	ARCBIOS_SPB_SIGNATURE	0x53435241	/* A R C S */

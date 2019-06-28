@@ -110,9 +110,6 @@ _C_LABEL(kernel_text):
         mtc0    k0, MIPS_COP_0_STATUS
 #endif
 
-	j octanerestart
-	nop
-
 #ifdef HPCMIPS_L1CACHE_DISABLE
 	mfc0	t0, MIPS_COP_0_CONFIG
 	li	t1, 0xfffffff8
