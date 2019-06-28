@@ -38,8 +38,6 @@ __KERNEL_RCSID(0, "$NetBSD: arcbios.c,v 1.13 2011/02/20 08:02:46 matt Exp $");
 #include <dev/cons.h>
 #include <sys/conf.h>
 
-#include <mips/locore.h>
-
 #include <dev/arcbios/arcbios.h>
 #include <dev/arcbios/arcbiosvar.h>
 
