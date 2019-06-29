@@ -123,6 +123,7 @@ struct arcbios_spb {
 /*
  * 4.2.5: System Configuration Data
  */
+#if 0
 struct arcbios_component {
 	uint32_t	Class;
 	uint32_t	Type;
@@ -134,6 +135,19 @@ struct arcbios_component {
 	uint32_t	ConfigurationDataSize;
 	uint32_t	IdentifierLength;
 	int32_t		Identifier;
+};
+#endif
+struct arcbios_component {
+	uint32_t	Class;
+	uint32_t	Type;
+	uint32_t	Flags;
+	uint16_t	Version;
+	uint16_t	Revision;
+	uint64_t	Key;
+	uint64_t	AffinityMask;
+	uint64_t	ConfigurationDataSize;
+	uint64_t	IdentifierLength;
+	int64_t		Identifier;
 };
 
 /*
@@ -296,10 +310,17 @@ struct arcbios_sysid {
 /*
  * ARC memory descriptor
  */
+#if 0
 struct arcbios_mem {
 	uint32_t	Type;
 	uint32_t	BasePage;
 	uint32_t	PageCount;
+};
+#endif
+struct arcbios_mem {
+	uint32_t	Type;
+	uint64_t	BasePage;
+	uint64_t	PageCount;
 };
 
 #if defined(sgimips)

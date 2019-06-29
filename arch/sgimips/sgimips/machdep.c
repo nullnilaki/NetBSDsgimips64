@@ -374,6 +374,8 @@ mach_init(int argc, int32_t argv32[], uintptr_t magic, int32_t bip32)
 	if (mach_type <= 0)
 		panic("invalid architecture");
 
+	//arcbios_Reboot();
+
 	/*
 	 * Get boot device infomation.
 	 */
