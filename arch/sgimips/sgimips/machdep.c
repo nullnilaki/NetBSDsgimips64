@@ -178,7 +178,7 @@ extern void	ip22_sdcache_enable(void);
 extern void mips3_clock_intr(vaddr_t, uint32_t, uint32_t);
 #endif
 
-void	mach_init(int, int32_t *, uintptr_t, int32_t);
+void	mach_init(int, char **, uintptr_t, int32_t);
 
 void	sgimips_count_cpus(struct arcbios_component *,
 	    struct arcbios_treewalk_context *);
@@ -237,7 +237,7 @@ static const char *bootinfo_msg = NULL;
  * Process arguments passed to us by the ARCS firmware.
  */
 void
-mach_init(int argc, int32_t argv32[], uintptr_t magic, int32_t bip32)
+mach_init(int argc, char *argv[], uintptr_t magic, int32_t bip32)
 {
 	paddr_t first, last;
 	vsize_t size;
@@ -254,6 +254,7 @@ mach_init(int argc, int32_t argv32[], uintptr_t magic, int32_t bip32)
 	char *esym = NULL;
 	struct btinfo_symtab *bi_syms;
 #endif /* NKSYMS || defined(DDB) || defined(MODULAR) */
+#if 0
 #ifdef _LP64
 	char *argv[20];
 
@@ -265,6 +266,7 @@ mach_init(int argc, int32_t argv32[], uintptr_t magic, int32_t bip32)
 	}
 #else
 	char **argv = (void *)argv32;
+#endif
 #endif
 	/*
 	 * Initialize firmware.  This will set up the bootstrap console.
@@ -373,8 +375,6 @@ mach_init(int argc, int32_t argv32[], uintptr_t magic, int32_t bip32)
 	}
 	if (mach_type <= 0)
 		panic("invalid architecture");
-
-	//arcbios_Reboot();
 
 	/*
 	 * Get boot device infomation.
