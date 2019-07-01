@@ -39,6 +39,8 @@ __KERNEL_RCSID(0, "$NetBSD: db_trace.c,v 1.43 2015/06/06 22:19:07 matt Exp $");
 
 #include <mips/mips_opcode.h>
 
+#include <dev/arcbios/arcbios.h>
+
 #include <machine/db_machdep.h>
 
 #include <ddb/db_interface.h>
@@ -139,6 +141,7 @@ void
 db_stack_trace_print(db_expr_t addr, bool have_addr, db_expr_t count,
     const char *modif, void (*pr)(const char *, ...))
 {
+	arcbios_Reboot();
 #ifndef DDB_TRACE
 	struct pcb *pcb;
 	struct proc *p;
