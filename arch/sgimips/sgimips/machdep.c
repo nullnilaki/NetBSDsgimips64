@@ -586,7 +586,7 @@ mach_init(int argc, char *argv[], uintptr_t magic, int32_t bip32)
 	mem_cluster_cnt = 0;
 	mem = NULL;
 
-#ifdef DEBUG
+//#ifdef DEBUG
 	i = 0;
 	mem = NULL;
 
@@ -594,11 +594,11 @@ mach_init(int argc, char *argv[], uintptr_t magic, int32_t bip32)
 		if ((mem = arcbios_GetMemoryDescriptor(mem)) != NULL) {
 			i++;
 			printf("Mem block %d: type %d, "
-			    "base 0x%04"PRIx32", size 0x%04"PRIx32"\n",
+			    "base 0x%08"PRIx64", size 0x%08"PRIx64"\n",
 			    i, mem->Type, mem->BasePage, mem->PageCount);
 		}
 	} while (mem != NULL);
-#endif
+//#endif
 
 	/*
 	 * XXX This code assumes that ARCS provides the memory
