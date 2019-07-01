@@ -183,6 +183,9 @@ __KERNEL_RCSID(0, "$NetBSD: mips_machdep.c,v 1.278 2017/06/09 06:43:30 skrll Exp
 
 #endif
 
+#include <dev/arcbios/arcbios.h>
+
+
 /* Internal routines. */
 int	cpu_dumpsize(void);
 u_long	cpu_dump_mempagecnt(void);
@@ -1271,7 +1274,6 @@ mips_vector_init(const struct splsw *splsw, bool multicpu_p)
 	 * frobbing routine function pointers.
 	 */
 	mips_config_cache();
-
 	/*
 	 * We default to RAS atomic ops since they are the lowest overhead.
 	 */
@@ -1316,7 +1318,9 @@ mips_vector_init(const struct splsw *splsw, bool multicpu_p)
 			break;
 		}
 #endif /* MIPS3_LOONGSON2 */
+#if 0
 		(*mips3_locore_vec.ljv_tlb_invalidate_all)();
+#endif
 		mips3_cp0_wired_write(pmap_tlb0_info.ti_wired);
 		mips3_vector_init(splsw);
 		mips_locoresw = mips3_locoresw;
