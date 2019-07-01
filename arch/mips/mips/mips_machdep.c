@@ -2082,13 +2082,25 @@ int mips_poolpage_vmfreelist = VM_FREELIST_DEFAULT;
 #define	HALFGIG		((paddr_t)512 * 1024 * 1024)
 #define	FOURGIG		((paddr_t)4 * 1024 * 1024 * 1024)
 
+#define	IS_XKPHYS(va)	(((va) >> 62) == 2)
+#define	XKPHYS_TO_PHYS(x)	((paddr_t)(x) & 0x0000000fffffffffUL)
+
 void
 mips_page_physload(vaddr_t vkernstart, vaddr_t vkernend,
 	const phys_ram_seg_t *segs, size_t nseg,
 	const struct mips_vmfreelist *flp, size_t nfl)
 {
-	const paddr_t kernstart = MIPS_KSEG0_TO_PHYS(trunc_page(vkernstart));
-	const paddr_t kernend = MIPS_KSEG0_TO_PHYS(round_page(vkernend));
+	paddr_t kernstart, kernend;
+	if (IS_XKPHYS(vkernstart)) {
+		kernstart = XKPHYS_TO_PHYS(trunc_page(vkernstart));
+	} else {
+		kernstart = MIPS_KSEG0_TO_PHYS(trunc_page(vkernstart));
+	}
+	if (IS_XKPHYS(vkernend)) {
+		kernend = XKPHYS_TO_PHYS(round_page(vkernend));
+	} else {
+		kernend = MIPS_KSEG0_TO_PHYS(round_page(vkernend));
+	}
 #if defined(VM_FREELIST_FIRST4G) || defined(VM_FREELIST_FIRST512M)
 #ifdef VM_FREELIST_FIRST512M
 	bool need512m = false;
