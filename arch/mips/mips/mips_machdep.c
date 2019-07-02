@@ -1255,7 +1255,6 @@ mips_vector_init(const struct splsw *splsw, bool multicpu_p)
 #ifdef __HAVE_MIPS_MACHDEP_CACHE_CONFIG
 	mips_machdep_cache_config();
 #endif
-
 	/*
 	 * if 'splsw' is NULL, use standard SPL with COP0 status/cause
 	 * otherwise use chip-specific splsw

@@ -103,6 +103,8 @@ __KERNEL_RCSID(0, "$NetBSD: cache.c,v 1.60 2018/09/03 16:29:26 riastradh Exp $")
 #endif
 #endif
 
+#include <dev/arcbios/arcbios.h>
+
 #ifdef MIPS1
 #ifdef ENABLE_MIPS_TX3900
 #include <mips/cache_tx39.h>
@@ -1040,10 +1042,22 @@ mips4_get_cache_config(int csizebase)
 	    MIPS4_CONFIG_DC_MASK, csizebase, MIPS4_CONFIG_DC_SHIFT);
 	mci->mci_pdcache_line_size = 32;	/* 32 Byte */
 
+#if 0
 	mci->mci_cache_alias_mask =
 	    ((mci->mci_pdcache_size / mci->mci_pdcache_ways) - 1) & ~PAGE_MASK;
 	mci->mci_cache_prefer_mask =
 	    uimax(mci->mci_pdcache_size, mci->mci_picache_size) - 1;
+#endif
+	uint32_t valias_mask;
+
+	valias_mask = (MAX((mci->mci_picache_size / 2), (mci->mci_pdcache_size / 2)) - 1) & ~PAGE_MASK;
+
+	if (valias_mask != 0) {
+		valias_mask |= PAGE_MASK;
+		mci->mci_cache_alias_mask = valias_mask;
+		mci->mci_cache_prefer_mask = valias_mask;
+	}
+	// valias_mask is 0x3fff
 }
 #endif /* ENABLE_MIPS4_CACHE_R10K */
 #endif /* MIPS3 || MIPS4 */
