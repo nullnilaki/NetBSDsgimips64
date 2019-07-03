@@ -79,11 +79,16 @@ __asm(".set mips3");
 #define	round_line(x)	(((x) + 64 - 1) & ~(64 - 1))
 #define	trunc_line(x)	((x) & ~(64 - 1))
 
+#define XKPHYS_BASE     0x8000000000000000UL
+#define PHYS_TO_XKPHYS(x,c) ((paddr_t)(x) | XKPHYS_BASE | ((c) << 59))
+#define CCA_COHERENT_EXCLWRITE  5UL /* cached, coherent, exclusive write */
+#define CCA_CACHED      CCA_COHERENT_EXCLWRITE
+
 void
 r10k_icache_sync_all(void)
 {
 	const struct mips_cache_info * const mci = &mips_cache_info;
-	vaddr_t va = MIPS_PHYS_TO_KSEG0(0);
+	vaddr_t va = PHYS_TO_XKPHYS(0, CCA_CACHED);
 	vaddr_t eva = va + mci->mci_picache_way_size;
 
 	mips_dcache_wbinv_all();
@@ -118,30 +123,26 @@ r10k_icache_sync_range(register_t va, vsize_t size)
 void
 r10k_icache_sync_range_index(vaddr_t va, vsize_t size)
 {
-	const struct mips_cache_info * const mci = &mips_cache_info;
-	vaddr_t eva, orig_va;
+	vaddr_t eva, sva;
+	vsize_t sz;
 
-	orig_va = va;
-
-	eva = round_line(va + size);
-	va = trunc_line(va);
-
-	mips_dcache_wbinv_range_index(va, (eva - va));
+	mips_dcache_wbinv_range_index(va, size);
 
 	__asm volatile("sync");
 
+	va = trunc_line(va);
+	sz = (round_line(va + size)) - va;
 	/*
 	 * Since we're doing Index ops, we expect to not be able
 	 * to access the address we've been given.  So, get the
 	 * bits that determine the cache index, and make a KSEG0
 	 * address out of them.
 	 */
-	va = MIPS_PHYS_TO_KSEG0(orig_va & mci->mci_picache_way_mask);
+	sva = PHYS_TO_XKPHYS(0, CCA_CACHED);
+	sva |= va & ((1UL << 14) - 1);
+	eva = sva + sz;
 
-	eva = round_line(va + size);
-	va = trunc_line(va);
-
-	while (va < eva) {
+	while (sva < eva) {
 		cache_op_r4k_line(va, CACHE_R4K_I|CACHEOP_R4K_INDEX_INV);
 		va++;
 		cache_op_r4k_line(va, CACHE_R4K_I|CACHEOP_R4K_INDEX_INV);
@@ -159,7 +160,7 @@ void
 r10k_pdcache_wbinv_all(void)
 {
 	const struct mips_cache_info * const mci = &mips_cache_info;
-	vaddr_t va = MIPS_PHYS_TO_KSEG0(0);
+	vaddr_t va = PHYS_TO_XKPHYS(0, CCA_CACHED);
 	vaddr_t eva = va + mci->mci_pdcache_way_size;
 
 	while (va < eva) {
@@ -186,21 +187,22 @@ r10k_pdcache_wbinv_range(register_t va, vsize_t size)
 void
 r10k_pdcache_wbinv_range_index(vaddr_t va, vsize_t size)
 {
-	const struct mips_cache_info * const mci = &mips_cache_info;
-	vaddr_t eva;
+	vaddr_t eva, sva;
+	vsize_t sz;
 
+	va = trunc_line(va);
+	sz = (round_line(va + size)) - va;
 	/*
 	 * Since we're doing Index ops, we expect to not be able
 	 * to access the address we've been given.  So, get the
 	 * bits that determine the cache index, and make a KSEG0
 	 * address out of them.
 	 */
-	va = MIPS_PHYS_TO_KSEG0(va & mci->mci_pdcache_way_mask);
+	sva = PHYS_TO_XKPHYS(0, CCA_CACHED);
+	sva |= va & ((1UL << 14) - 1);
+	eva = sva + sz;
 
-	eva = round_line(va + size);
-	va = trunc_line(va);
-
-	while (va < eva) {
+	while (sva < eva) {
 		cache_op_r4k_line(va, CACHE_R4K_D|CACHEOP_R4K_INDEX_WB_INV);
 		va++;
 		cache_op_r4k_line(va, CACHE_R4K_D|CACHEOP_R4K_INDEX_WB_INV);
@@ -245,7 +247,7 @@ void
 r10k_sdcache_wbinv_all(void)
 {
 	const struct mips_cache_info * const mci = &mips_cache_info;
-	vaddr_t va = MIPS_PHYS_TO_KSEG0(0);
+	vaddr_t va = PHYS_TO_XKPHYS(0, CCA_CACHED);
 	vaddr_t eva = va + mci->mci_sdcache_way_size;
 	vsize_t line_size = mci->mci_sdcache_line_size;
 
@@ -276,21 +278,23 @@ void
 r10k_sdcache_wbinv_range_index(vaddr_t va, vsize_t size)
 {
 	const struct mips_cache_info * const mci = &mips_cache_info;
-	vaddr_t eva;
 	vsize_t line_size = mci->mci_sdcache_line_size;
+	vaddr_t eva, sva;
+	vsize_t sz;
 
+	va = trunc_line(va);
+	sz = (round_line(va + size)) - va;
 	/*
 	 * Since we're doing Index ops, we expect to not be able
 	 * to access the address we've been given.  So, get the
 	 * bits that determine the cache index, and make a KSEG0
 	 * address out of them.
 	 */
-	va = MIPS_PHYS_TO_KSEG0(va & mci->mci_sdcache_way_mask);
+	sva = PHYS_TO_XKPHYS(0, CCA_CACHED);
+	sva |= va & ((1UL << 14) - 1);
+	eva = sva + sz;
 
-	eva = round_line(va + size);
-	va = trunc_line(va);
-
-	while (va < eva) {
+	while (sva < eva) {
 		cache_op_r4k_line(va, CACHE_R4K_SD|CACHEOP_R4K_INDEX_WB_INV);
 		va++;
 		cache_op_r4k_line(va, CACHE_R4K_SD|CACHEOP_R4K_INDEX_WB_INV);
