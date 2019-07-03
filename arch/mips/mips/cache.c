@@ -858,6 +858,24 @@ primary_cache_is_2way:
 	}
 
 	mips_dcache_compute_align();
+
+	struct mips_options * const opts = &mips_options;
+	printf("R10000 params: cpu arch: %d\n", opts->mips_cpu_arch);
+	printf("R10000 params: TLB entries: %d\n", opts->mips_num_tlb_entries);
+	printf("R10000 params: %s: line=%d, total=%d, "
+	    "ways=%d, sets=%d, colors=%d\n", "Icache",
+	    mci->mci_picache_line_size,
+	    mci->mci_picache_way_size * mci->mci_picache_ways,
+	    mci->mci_picache_ways,
+	    mci->mci_picache_way_size / mci->mci_picache_line_size,
+	    mci->mci_picache_way_size >> PAGE_SHIFT);
+	printf("R10000 params: %s: line=%d, total=%d, "
+	    "ways=%d, sets=%d, colors=%d\n", "Dcache",
+	    mci->mci_pdcache_line_size,
+	    mci->mci_pdcache_way_size * mci->mci_pdcache_ways,
+	    mci->mci_pdcache_ways,
+	    mci->mci_pdcache_way_size / mci->mci_pdcache_line_size,
+	    mci->mci_pdcache_way_size >> PAGE_SHIFT);
 }
 
 #if defined(MIPS1) || defined(MIPS3) || defined(MIPS4)
