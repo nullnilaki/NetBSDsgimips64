@@ -1414,6 +1414,7 @@ mips3_tlb_probe(void)
 		opts->mips3_tlb_vpn_mask <<= 2;
 		opts->mips3_tlb_vpn_mask >>= 2;
 		opts->mips3_tlb_pfn_mask = mips3_cp0_tlb_entry_lo_probe();
+		//pg_mask = 1ffe000, vpn_mask = fffffffffff, pfn_mask = c0000003ffffffc0
 #if defined(_LP64) && defined(ENABLE_MIPS_16KB_PAGE)
 		/*
 		 * 16KB pages could cause our page table being able to address
