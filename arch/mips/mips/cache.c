@@ -1047,6 +1047,7 @@ mips4_get_cache_config(int csizebase)
 	    ((mci->mci_pdcache_size / mci->mci_pdcache_ways) - 1) & ~PAGE_MASK;
 	mci->mci_cache_prefer_mask =
 	    uimax(mci->mci_pdcache_size, mci->mci_picache_size) - 1;
+	// mci_cache_alias_mask = 2000, mci_cache_prefer_mask=7fff
 #endif
 	uint32_t valias_mask;
 
