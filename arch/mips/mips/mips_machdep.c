@@ -1317,9 +1317,7 @@ mips_vector_init(const struct splsw *splsw, bool multicpu_p)
 			break;
 		}
 #endif /* MIPS3_LOONGSON2 */
-#if 0
 		(*mips3_locore_vec.ljv_tlb_invalidate_all)();
-#endif
 		mips3_cp0_wired_write(pmap_tlb0_info.ti_wired);
 		mips3_vector_init(splsw);
 		mips_locoresw = mips3_locoresw;

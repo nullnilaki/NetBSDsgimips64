@@ -138,6 +138,9 @@
 #error use locore_mips1.S
 #endif
 
+#undef  MIPS_KSEG0_START
+#define MIPS_KSEG0_START    0xffffffff80000000UL
+
 #if defined(__mips_o32)
 #define	RESET_EXCEPTION_LEVEL_DISABLE_INTERRUPTS(reg) \
 	mtc0 zero, MIPS_COP_0_STATUS
@@ -2480,7 +2483,9 @@ END(MIPSX(tlb_invalidate_globals))
  */
 LEAF_NOPROFILE(MIPSX(tlb_invalidate_all))
 	mfc0	ta0, MIPS_COP_0_STATUS		# save status register
-	mtc0	zero, MIPS_COP_0_STATUS		# disable interrupts
+    ori ta1, ta0, MIPS_SR_INT_IE
+    xori    ta1, ta1, MIPS_SR_INT_IE
+    mtc0    ta1, MIPS_COP_0_STATUS    # Disable interrupts
 	COP0_SYNC
 
 	INT_L	a0, _C_LABEL(mips_options) + MO_NUM_TLB_ENTRIES
