@@ -413,6 +413,8 @@ VECTOR(MIPSX(xtlb_miss), unknown)
 #else /* !MIPS3_LOONGSON2 */
 VECTOR(MIPSX(tlb_miss), unknown)
 	.set	noat
+	j octanerestart
+	nop
 	_MFC0	k0, MIPS_COP_0_BAD_VADDR	#00: k0=bad address
 	lui	k1, %hi(CPUVAR(PMAP_SEG0TAB))	#01: k1=hi of seg0tab
 #ifdef _LP64
@@ -2984,6 +2986,8 @@ END(MIPSX(pagezero))
 
 	.globl _C_LABEL(MIPSX(locore_vec))
 _C_LABEL(MIPSX(locore_vec)):
+	j octanerestart
+	nop
 	PTR_WORD _C_LABEL(MIPSX(cpu_switch_resume))
 	PTR_WORD _C_LABEL(MIPSX(lwp_trampoline))
 	PTR_WORD _C_LABEL(MIPSX(wbflush)) # wbflush
@@ -3004,6 +3008,8 @@ _C_LABEL(MIPSX(locore_vec)):
 
 	.globl _C_LABEL(MIPSX(locoresw))
 _C_LABEL(MIPSX(locoresw)):
+	j octanerestart
+	nop
 	PTR_WORD _C_LABEL(MIPSX(wbflush))	# lsw_wbflush
 	PTR_WORD _C_LABEL(nullop)		# lsw_cpu_idle
 	PTR_WORD _C_LABEL(nullop)		# lsw_send_ipi
