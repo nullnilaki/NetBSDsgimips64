@@ -831,10 +831,18 @@ END(mips_pagezero)
 LEAF(octanerestart)
 	dla $2, 0xffffffff80001000
 	ld  $3, 2*0x20($2)
-	ld  $2, 2*0x18($3)
+	ld  $2, 2*0x14($3)
 	jr  $2
 	nop
 END(octanerestart)
+
+LEAF(octanereboot)
+	dla $2, 0xffffffff80001000
+	ld  $3, 2*0x20($2)
+	ld  $2, 2*0x18($3)
+	jr  $2
+	nop
+END(octanereboot)
 
 #ifndef DDB_TRACE
 
