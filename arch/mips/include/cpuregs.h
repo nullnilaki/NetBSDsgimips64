@@ -456,13 +456,15 @@
 #define	MIPS4_CONFIG_CACHE_L2_LSIZE(config)				\
 	(((config) & MIPS4_CONFIG_SB) ? 128 : 64)
 
+#define CKSEG1_BASE     0xffffffffa0000000UL
+
 /*
  * Location of exception vectors.
  *
  * Common vectors:  reset and UTLB miss.
  */
 #define	MIPS_RESET_EXC_VEC	MIPS_PHYS_TO_KSEG1(0x1FC00000)
-#define	MIPS_UTLB_MISS_EXC_VEC	MIPS_PHYS_TO_KSEG0(0)
+#define	MIPS_UTLB_MISS_EXC_VEC	(CKSEG1_BASE + 0x00000000)
 
 /*
  * MIPS-1 general exception vector (everything else)
