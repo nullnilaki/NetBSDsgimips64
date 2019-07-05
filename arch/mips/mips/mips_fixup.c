@@ -260,6 +260,8 @@ fixup_mips_jump(uint32_t *insnp, const struct mips_jump_fixup_info *jfi)
 	*insnp = insn;
 }
 
+#define OP_DADDIU		031
+
 intptr_t
 mips_fixup_addr(const uint32_t *stubp)
 {
@@ -317,6 +319,12 @@ mips_fixup_addr(const uint32_t *stubp)
 				errstr = "SD";
 				goto out;
 			}
+			break;
+		case OP_DADDIU:
+			regs[insn.IType.rt] = (regs[insn.IType.rs] + (int16_t)insn.IType.imm);
+			used |= (1 << insn.IType.rt);
+			errstr = "DADDIU";
+			printf("%s insn %#x at %p\n", errstr, stubp[n], &stubp[n]);
 			break;
 #else
 		case OP_LW:
