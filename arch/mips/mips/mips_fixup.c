@@ -260,8 +260,6 @@ fixup_mips_jump(uint32_t *insnp, const struct mips_jump_fixup_info *jfi)
 	*insnp = insn;
 }
 
-#define OP_DADDIU		031
-
 intptr_t
 mips_fixup_addr(const uint32_t *stubp)
 {
@@ -393,17 +391,22 @@ mips_fixup_addr(const uint32_t *stubp)
 				    regs[insn.RType.rs] & regs[insn.RType.rt];
 				used |= (1 << insn.RType.rd);
 				break;
-#if !defined(__mips_o32)
+//#if !defined(__mips_o32)
 			case OP_DSLL32:	/* force to 32-bits */
 			case OP_DSRA32:	/* force to 32-bits */
 				if (regs[insn.RType.rd] != regs[insn.RType.rt]
-				    || (used & (1 << insn.RType.rt)) == 0
-				    || regs[insn.RType.shamt] != 0) {
-					errstr = "AND";
+				    || (used & (1 << insn.RType.rt)) == 0){
+				    //|| regs[insn.RType.shamt] != 0) {
+					errstr = "DSLL/DSRA";
 					goto out;
 				}
 				break;
-#endif
+			case OP_DADDU:
+				regs[insn.RType.rd] =
+				    regs[insn.RType.rs] + regs[insn.RType.rt];
+				used |= (1 << insn.RType.rd);
+				break;
+//#endif
 			case OP_SLL:	/* nop */
 				if (insn.RType.rd != _R_ZERO) {
 					errstr = "NOP";
