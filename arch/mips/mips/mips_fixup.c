@@ -297,19 +297,31 @@ mips_fixup_addr(const uint32_t *stubp)
 	 */
 	for (n = 0; n < 16; n++) {
 		const InstFmt insn = { .word = stubp[n] };
+
+
+	//printf("insn %#x at %p\n", stubp[n], &stubp[n]);
+
+
 		switch (insn.IType.op) {
 		case OP_LUI:
 			regs[insn.IType.rt] = (int16_t)insn.IType.imm << 16;
+	//		printf("LUI regs[insn.IType.rt] = %lx\n", regs[insn.IType.rt]);
 			used |= (1 << insn.IType.rt);
 			break;
 #ifdef _LP64
+		case OP_DADDIU:
+			regs[insn.IType.rt] = (regs[insn.IType.rs] + (int16_t)insn.IType.imm);
+	//		printf("OP_DADDIU regs[insn.IType.rt] = %lx\n", regs[insn.IType.rt]);
+			used |= (1 << insn.IType.rt);
+			break;
 		case OP_LD:
 			if ((used & (1 << insn.IType.rs)) == 0) {
 				errstr = "LD";
 				goto out;
 			}
+	//		printf("OP_LD regs[insn.IType.rs] = %lx\n", regs[insn.IType.rs]);
 			regs[insn.IType.rt] = *(const int64_t *)
-			    (regs[insn.IType.rs] + (int16_t)insn.IType.imm);
+			    ((intptr_t)(regs[insn.IType.rs] + (int16_t)insn.IType.imm));
 			used |= (1 << insn.IType.rt);
 			break;
 		case OP_SD:
@@ -317,10 +329,6 @@ mips_fixup_addr(const uint32_t *stubp)
 				errstr = "SD";
 				goto out;
 			}
-			break;
-		case OP_DADDIU:
-			regs[insn.IType.rt] = (regs[insn.IType.rs] + (int16_t)insn.IType.imm);
-			used |= (1 << insn.IType.rt);
 			break;
 #else
 		case OP_LW:
@@ -400,10 +408,17 @@ mips_fixup_addr(const uint32_t *stubp)
 					errstr = "DSLL/DSRA";
 					goto out;
 				}
+				regs[insn.RType.rd] =
+				    regs[insn.RType.rt] << (insn.RType.shamt + 32);
+	//			printf("DSLL/DSRA insn.RType.shamt = %x\n", insn.RType.shamt);
+	//			printf("DSLL/DSRA regs[insn.RType.rt] = %lx\n", regs[insn.RType.rt]);
+	//			printf("DSLL/DSRA regs[insn.RType.rd] = %lx\n", regs[insn.RType.rd]);
+				used |= (1 << insn.RType.rd);
 				break;
 			case OP_DADDU:
 				regs[insn.RType.rd] =
-				    regs[insn.RType.rs] + regs[insn.RType.rt];
+				    (regs[insn.RType.rs] + regs[insn.RType.rt]);
+	//			printf("OP_DADDU regs[insn.RType.rd] = %lx\n", regs[insn.RType.rd]);
 				used |= (1 << insn.RType.rd);
 				break;
 //#endif
