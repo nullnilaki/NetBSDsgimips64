@@ -138,9 +138,6 @@
 #error use locore_mips1.S
 #endif
 
-#undef  MIPS_KSEG0_START
-#define MIPS_KSEG0_START    0xffffffff80000000UL
-
 #if defined(__mips_o32)
 #define	RESET_EXCEPTION_LEVEL_DISABLE_INTERRUPTS(reg) \
 	mtc0 zero, MIPS_COP_0_STATUS
@@ -591,7 +588,6 @@ VECTOR(MIPSX(cache), unknown)
 	jr	k0					#06
 	 PTR_L	k1, %lo(CPUVAR(CURLWP))(k1)		#07: k1=lo of curlwp
 _VECTOR_END(MIPSX(cache))
-
 /*
  *----------------------------------------------------------------------------
  *

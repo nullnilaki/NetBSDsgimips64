@@ -140,6 +140,7 @@ __KERNEL_RCSID(0, "$NetBSD: pmap_machdep.c,v 1.23 2018/09/03 16:29:26 riastradh 
 #include <mips/locore.h>
 #include <mips/pte.h>
 
+#if 0
 CTASSERT(MIPS_KSEG0_START < 0);
 CTASSERT((intptr_t)MIPS_PHYS_TO_KSEG0(0x1000) < 0);
 CTASSERT(MIPS_KSEG1_START < 0);
@@ -158,6 +159,7 @@ CTASSERT(MIPS_KSEG1_P(MIPS_PHYS_TO_KSEG1(0)));
 CTASSERT(VM_MIN_KERNEL_ADDRESS % NBXSEG == 0);
 #else
 CTASSERT(VM_MIN_KERNEL_ADDRESS % NBSEG == 0);
+#endif
 #endif
 
 //PMAP_COUNTER(idlezeroed_pages, "pages idle zeroed");

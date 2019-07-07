@@ -499,7 +499,6 @@ mips_fixup_stubs(uint32_t *start, uint32_t *end)
 		fixups_done++;
 #endif
 	}
-	octanerestart();
 
 	if (sizeof(uint32_t [end - start]) > mips_cache_info.mci_picache_size)
 		mips_icache_sync_all();

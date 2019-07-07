@@ -672,9 +672,6 @@ mach_init(int argc, char *argv[], uintptr_t magic, int32_t bip32)
 	 * Clear out the I and D caches.
 	 */
 	mips_vector_init(NULL, false);
-	arcbios_Reboot();
-
-
 	/*
 	 * Initialize error message buffer (at end of core).
 	 */
