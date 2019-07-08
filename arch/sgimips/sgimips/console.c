@@ -68,6 +68,8 @@ int comcnmode = CONMODE;
 
 extern struct consdev scn_cn;
 extern struct consdev zs_cn;
+extern struct consdev com_cn;
+
 
 extern void	zs_kgdb_init(void);
 extern void	zskbd_cnattach(int, int);
@@ -126,6 +128,11 @@ consinit(void)
 #else
 		panic("this ip32 kernel does not contain framebuffer support.");
 #endif
+		break;
+
+	case MACH_SGI_IP30:
+		if (ioc3_serial_init(consdev))
+			return;
 		break;
 
 	default:
@@ -230,6 +237,22 @@ mace_serial_init(const char *consdev)
 		if (comcnattach(mace_isa_memt, MACE_BASE + base,
 		    speed, COM_FREQ, COM_TYPE_NORMAL, comcnmode) == 0)
 			return (1);
+	}
+#endif
+
+	return (0);
+}
+
+static int
+ioc3_serial_init(const char *consdev)
+{
+#if (NCOM > 0)
+	if ((strlen(consdev) == 9) && (!strncmp(consdev, "serial", 6)) &&
+	    (consdev[7] == '0' || consdev[7] == '1')) {
+		cn_tab = &com_cn;
+		(*cn_tab->cn_init)(cn_tab);
+
+		return (1);
 	}
 #endif
 
