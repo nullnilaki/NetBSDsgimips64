@@ -1,0 +1,1 @@
+void    xbow_build_bus_space(struct mips_bus_space *, int, int);
