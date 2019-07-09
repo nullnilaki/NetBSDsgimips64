@@ -68,7 +68,7 @@ int comcnmode = CONMODE;
 
 extern struct consdev scn_cn;
 extern struct consdev zs_cn;
-extern struct consdev com_cn;
+extern struct consdev com_ioc3_cn;
 
 
 extern void	zs_kgdb_init(void);
@@ -82,6 +82,7 @@ static int	scn_serial_init(const char *);
 static int	zs_serial_init(const char *);
 static int	gio_video_init(const char *);
 static int	mace_serial_init(const char *);
+static int	ioc3_serial_init(const char *);
 
 void
 consinit(void)
@@ -249,8 +250,8 @@ ioc3_serial_init(const char *consdev)
 #if (NCOM > 0)
 	if ((strlen(consdev) == 9) && (!strncmp(consdev, "serial", 6)) &&
 	    (consdev[7] == '0' || consdev[7] == '1')) {
-		cn_tab = &com_cn;
-		(*cn_tab->cn_init)(cn_tab);
+		cn_tab = &com_ioc3_cn;
+		(*cn_tab->cn_probe)(cn_tab);
 
 		return (1);
 	}
