@@ -82,20 +82,18 @@
 /*
  * Global data area
  */
-
 #define GDA_BASE        0x0000000000000400
 
 #define GDA_MAGIC       0x58464552      /* XFER */
 
-#if !defined(_LOCORE)
-struct ip30_gda {
-    uint32_t    magic;      /* GDA_MAGIC */
-    uint32_t    promop;
-    void        (*nmi_cb)(void);
-    uint64_t    masterspid;
-    void        *tlb_handlers[3];
-    uint64_t    nmi_count;
-};
+#define CCA_NC          2UL /* uncached, write-around */
+#define XKPHYS_BASE     0x8000000000000000UL
+#define PHYS_TO_XKPHYS(x,c) ((paddr_t)(x) | XKPHYS_BASE | ((c) << 59))
 
-int ip30_find_video(void);
-#endif
+paddr_t		ip30_widget_long(int16_t, u_int);
+
+paddr_t
+ip30_widget_long(int16_t nasid, u_int widget)
+{
+    return PHYS_TO_XKPHYS((uint64_t)(widget) << 36, CCA_NC);
+}

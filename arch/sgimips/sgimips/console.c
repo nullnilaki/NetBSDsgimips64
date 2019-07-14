@@ -52,6 +52,9 @@ __KERNEL_RCSID(0, "$NetBSD: console.c,v 1.45 2015/09/30 19:46:27 macallan Exp $"
 #include <sgimips/hpc/hpcreg.h>
 #include <sgimips/ioc/iocreg.h>
 #include <sgimips/mace/macereg.h>
+#include <sgimips/sgimips/ip30.h>
+#include <sgimips/xio/xbow.h>
+#include <sgimips/xio/xbridgereg.h>
 
 #include "com.h"
 #include "scn.h"
@@ -68,8 +71,6 @@ int comcnmode = CONMODE;
 
 extern struct consdev scn_cn;
 extern struct consdev zs_cn;
-extern struct consdev com_ioc3_cn;
-
 
 extern void	zs_kgdb_init(void);
 extern void	zskbd_cnattach(int, int);
@@ -248,12 +249,21 @@ static int
 ioc3_serial_init(const char *consdev)
 {
 #if (NCOM > 0)
+	const char     *dbaud;
+	int       speed;
+	bus_addr_t base;
+
 	if ((strlen(consdev) == 9) && (!strncmp(consdev, "serial", 6)) &&
 	    (consdev[7] == '0' || consdev[7] == '1')) {
-		cn_tab = &com_ioc3_cn;
-		(*cn_tab->cn_probe)(cn_tab);
+		/* Get comm speed from ARCS */
+		dbaud = arcbios_GetEnvironmentVariable("dbaud");
+		speed = strtoul(dbaud, NULL, 10);
+		base = ip30_widget_long(0, IP30_BRIDGE_WIDGET) + BRIDGE_PCI0_MEM_SPACE_BASE + 0x500000;
 
-		return (1);
+		xbow_build_bus_space(xbow_memt, base);
+
+		if (comcnattach(xbow_memt, base, speed, COM_FREQ, COM_TYPE_NORMAL, comcnmode) == 0)
+			return (1);
 	}
 #endif
 

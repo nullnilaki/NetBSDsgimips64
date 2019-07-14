@@ -14,7 +14,8 @@ SSGIMIPS=	${SYSDIR}/arch/sgimips/sgimips/*.[ch] \
 		${SYSDIR}/arch/sgimips/hpc/*.[ch] \
 		${SYSDIR}/arch/sgimips/ioc/*.[ch] \
 		${SYSDIR}/arch/sgimips/mace/*.[ch] \
-		${SYSDIR}/arch/sgimips/pci/*.[ch]
+		${SYSDIR}/arch/sgimips/pci/*.[ch] \
+		${SYSDIR}/arch/sgimips/xio/*.[ch]
 ASGIMIPS=	${SYSDIR}/arch/sgimips/sgimips/*.S
 
 # Directories in which to place tags links

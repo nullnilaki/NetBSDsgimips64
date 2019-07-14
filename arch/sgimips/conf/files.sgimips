@@ -43,6 +43,8 @@ include "arch/sgimips/ioc/files.ioc"		# depends on int0 (files.dev)
 defflag opt_sgimace.h MACE_NEEDS_DELAYS
 include "arch/sgimips/mace/files.mace"
 
+include "arch/sgimips/xio/files.xio"
+
 # Machine-independent drivers.
 include "dev/i2o/files.i2o"
 

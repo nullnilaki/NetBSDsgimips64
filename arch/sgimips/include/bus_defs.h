@@ -48,6 +48,7 @@ extern bus_space_tag_t mace_pci_memt;	/* address-twiddled to look little */
 extern bus_space_tag_t mace_pci_iot;	/* endian with <32bit accesses */
 extern bus_space_tag_t gio_pci_memt;	/* same, without windows */
 extern bus_space_tag_t hpc_memt;	/* 8bit regs at 32bit spacing */
+extern bus_space_tag_t xbow_memt;	/* xbow */
 
 #include <mips/bus_dma_defs.h>
 #define	SGIMIPS_DMAMAP_COHERENT _BUS_DMAMAP_COHERENT
