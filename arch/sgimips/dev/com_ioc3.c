@@ -35,95 +35,72 @@
 #include <machine/bus.h>
 #include <machine/intr.h>
 
+#include <machine/autoconf.h>
+
 #include <dev/ic/comreg.h>
 #include <dev/ic/comvar.h>
-#include <dev/ic/ns16550reg.h>
 
-#include <sgi/pci/iocvar.h>
-
-int com_ioc3_probe(struct device *, void *, void *);
-void    com_ioc3_attach(struct device *, struct device *, void *);
-
-struct cfattach com_ioc_ca = {
-    sizeof(struct com_softc), com_ioc_probe, com_ioc_attach
+struct com_ioc3_softc {
+    struct com_softc sc_com;
+    void *sc_ih;
 };
 
-int
-com_ioc3_probe(struct device *parent, void *match, void *aux)
-{
-    struct cfdata *cf = match;
-    struct ioc_attach_args *iaa = aux;
-    bus_space_tag_t iot = iaa->iaa_memt;
-    bus_space_handle_t ioh;
-    int rv = 0, console = 0;
+static int  com_ioc3_probe(device_t, cfdata_t , void *);
+static void com_ioc3_attach(device_t, device_t, void *);
 
+CFATTACH_DECL_NEW(com_ioc3, sizeof(struct com_ioc3_softc),
+    com_ioc3_probe, com_ioc3_attach, NULL, NULL);
+
+int
+com_ioc3_probe(device_t parent, cfdata_t match, void *aux)
+{
     if (arcbios_GetEnvironmentVariable("ConsoleOut") == NULL)
         panic("com_ioc3_probe without valid ARCS ConsoleOut setting!");
 
-    if (comconsiot != NULL)
-        console = iaa->iaa_memh + iaa->iaa_base ==
-            comconsiot->bus_base + comconsaddr;
-
-    /* if it's in use as console, it's there. */
-    if (!(console && !comconsattached)) {
-        if (bus_space_subregion(iot, iaa->iaa_memh,
-            iaa->iaa_base, COM_NPORTS, &ioh) == 0)
-            rv = comprobe1(iot, ioh);
-    } else
-        rv = 1;
-
-    /* make a config stanza with exact locators match over a generic line */
-    if (cf->cf_loc[0] != -1)
-        rv += rv;
-
-    return rv;
+    return 1;
 }
 
 void
-com_ioc3_attach(struct device *parent, struct device *self, void *aux)
+com_ioc3_attach(struct device *parent, device_t self, void *aux)
 {
-    struct com_softc *sc = (void *)self;
-    struct ioc_attach_args *iaa = aux;
+#if 0
+    struct com_ioc3_softc *ioc3sc = device_private(self);
+    struct com_softc *sc = &ioc3sc->sc_com;
+    struct ioc3_attach_args *iaa = aux;
     bus_space_handle_t ioh;
-    int console = 0;
+    bus_space_handle_t  ioh;
 
-    if (comconsiot != NULL)
-        console = iaa->iaa_memh + iaa->iaa_base ==
-            comconsiot->bus_base + comconsaddr;
-
-    sc->sc_hwflags = 0;
-    sc->sc_swflags = 0;
-    sc->sc_frequency = 22000000 / 3;
-
-    /* if it's in use as console, it's there. */
-    if (!(console && !comconsattached)) {
-        sc->sc_iot = iaa->iaa_memt;
-        sc->sc_iobase = iaa->iaa_base;
-
-        if (bus_space_subregion(iaa->iaa_memt, iaa->iaa_memh,
-            iaa->iaa_base, COM_NPORTS, &ioh) != 0) {
-            printf(": can't map registers\n");
-            return;
-        }
-    } else {
-        /*
-         * If we are the console, reuse the existing bus_space
-         * information, so that comcnattach() invokes bus_space_map()
-         * with correct parameters.
-         */
-        sc->sc_iot = comconsiot;
-        sc->sc_iobase = comconsaddr;
-
-        if (comcnattach(sc->sc_iot, sc->sc_iobase, comconsrate,
-            sc->sc_frequency, (TTYDEF_CFLAG & ~(CSIZE | PARENB)) | CS8))
-            panic("can't setup serial console");
-        ioh = comconsioh;
+    sc->sc_dev = self;
+    if (!com_is_console(maa->ma_iot, maa->ma_addr, &ioh) &&
+        bus_space_map(maa->ma_iot, maa->ma_addr, COM_NPORTS, 0, &ioh)) {
+        aprint_error(": can't map i/o space\n");
+        return;
     }
+    com_init_regs(&sc->sc_regs, maa->ma_iot, ioh, maa->ma_addr);
 
-    sc->sc_ioh = ioh;
+    sc->sc_frequency = 22000000 / 3;
 
     com_attach_subr(sc);
 
     ioc_intr_establish(parent, iaa->iaa_dev, IPL_TTY, comintr,
         (void *)sc, sc->sc_dev.dv_xname);
+#endif
+    panic("com_ioc3_attach");
+    return;
+}
+
+void
+com_ioc3_cnprobe(struct consdev *cn)
+{
+    cp->cn_pri = CN_REMOTE;
+}
+
+extern struct mips_bus_space ioc3_bs;
+
+void
+com_ioc3_cninit(struct consdev *cn)
+{
+
+    comcnattach(&ioc3_bs, COM_BASE, 115200, COM_MAINBUS_FREQ, COM_TYPE_NORMAL,
+        CONMODE);
 }

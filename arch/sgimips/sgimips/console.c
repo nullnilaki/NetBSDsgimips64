@@ -55,6 +55,7 @@ __KERNEL_RCSID(0, "$NetBSD: console.c,v 1.45 2015/09/30 19:46:27 macallan Exp $"
 #include <sgimips/sgimips/ip30.h>
 #include <sgimips/xio/xbow.h>
 #include <sgimips/xio/xbridgereg.h>
+#include <sgimips/pci/ioc3reg.h>
 
 #include "com.h"
 #include "scn.h"
@@ -251,18 +252,21 @@ ioc3_serial_init(const char *consdev)
 #if (NCOM > 0)
 	const char     *dbaud;
 	int       speed;
-	bus_addr_t base;
+	bus_addr_t base, offs;
 
 	if ((strlen(consdev) == 9) && (!strncmp(consdev, "serial", 6)) &&
 	    (consdev[7] == '0' || consdev[7] == '1')) {
 		/* Get comm speed from ARCS */
 		dbaud = arcbios_GetEnvironmentVariable("dbaud");
 		speed = strtoul(dbaud, NULL, 10);
-		base = ip30_widget_long(0, IP30_BRIDGE_WIDGET) + BRIDGE_PCI0_MEM_SPACE_BASE + 0x500000;
+		offs = BRIDGE_PCI0_MEM_SPACE_BASE;
+		base = ip30_widget_map(0, IP30_BRIDGE_WIDGET, offs) + 0x500000;
+
+		/* Buffer cleaning */
+		delay(10000);
 
 		xbow_build_bus_space(xbow_memt, base);
-
-		if (comcnattach(xbow_memt, base, speed, COM_FREQ, COM_TYPE_NORMAL, comcnmode) == 0)
+		if (comcnattach(xbow_memt, base + IOC3_UARTA_BASE, speed, (22000000 / 3), COM_TYPE_NORMAL, comcnmode) == 0)
 			return (1);
 	}
 #endif

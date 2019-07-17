@@ -97,16 +97,15 @@ bus_space_tag_t xbow_memt = NULL;
 void
 xbow_build_bus_space(struct mips_bus_space *bs, bus_addr_t bus_base)
 {
-    xbow_bus_mem_init(&xbow_mbst, (void *)bus_base);
+    xbow_bus_mem_init(&xbow_mbst, NULL);
     xbow_memt = &xbow_mbst;
 }
 
 #define CHIP            xbow
 #define CHIP_MEM        /* defined */
-#define CHIP_ACCESS_SIZE    8
-#define	CHIP_W1_BUS_START(v)	0x0000000040000000ULL
-#define	CHIP_W1_BUS_END(v)	0x0000000040000000ULL + 0x0000000040000000ULL
-#define	CHIP_W1_SYS_START(v)	0x0000000040000000ULL
-#define	CHIP_W1_SYS_END(v)	0x0000000040000000ULL + 0x0000000040000000ULL
+#define	CHIP_W1_BUS_START(v)	0x900000f040500000ULL
+#define	CHIP_W1_BUS_END(v)	    0x900000f040500000ULL + 0x0000000040000000ULL
+#define	CHIP_W1_SYS_START(v)	0x900000f040500000ULL
+#define	CHIP_W1_SYS_END(v)	    0x900000f040500000ULL + 0x0000000040000000ULL
 
 #include <mips/mips/bus_space_alignstride_chipdep.c>

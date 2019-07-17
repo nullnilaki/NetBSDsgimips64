@@ -225,6 +225,8 @@ extern void *_binary_splash_image_end;
 
 #include <sys/userconf.h>
 
+#include <dev/arcbios/arcbios.h>
+
 extern struct lwp lwp0;
 extern time_t rootfstime;
 
@@ -297,6 +299,7 @@ main(void)
 	once_init();
 
 	mi_cpu_init();
+
 	kernconfig_lock_init();
 	kthread_sysinit();
 
@@ -307,6 +310,7 @@ main(void)
 	evcnt_init();
 
 	uvm_init();
+
 	ubchist_init();
 	kcpuset_sysinit();
 
@@ -338,6 +342,7 @@ main(void)
 	/* Initialize callouts, part 1. */
 	callout_startup();
 
+
 	/* Initialize the kernel authorization subsystem. */
 	kauth_init();
 
@@ -353,6 +358,7 @@ main(void)
 
 	/* Start module system. */
 	module_init();
+
 
 	/*
 	 * Initialize the kernel authorization subsystem and start the
