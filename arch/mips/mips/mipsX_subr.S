@@ -410,8 +410,6 @@ VECTOR(MIPSX(xtlb_miss), unknown)
 #else /* !MIPS3_LOONGSON2 */
 VECTOR(MIPSX(tlb_miss), unknown)
 	.set	noat
-	j octanerestart
-	nop
 	_MFC0	k0, MIPS_COP_0_BAD_VADDR	#00: k0=bad address
 	lui	k1, %hi(CPUVAR(PMAP_SEG0TAB))	#01: k1=hi of seg0tab
 #ifdef _LP64
@@ -624,9 +622,9 @@ VECTOR(MIPSX(exception), unknown)
 						#  shifted left by 2 bits so
 						#  we dont have to shift.
 	PTR_L	k0, 0(k0)			#09: get the function address
-	lui	k1, %hi(CPUVAR(CURLWP))		#0a: k1=hi of curlwp
+	dla k1, (CPUVAR(CURLWP))
 	jr	k0				#0b: jump to the function
-	 PTR_L	k1, %lo(CPUVAR(CURLWP))(k1)	#0c: k1=lo of curlwp
+	 ld 	k1, 0(k1) 	#0c: k1=lo of curlwp
 	nop					#0d
 	nop					#0e
 #ifndef _LP64
@@ -1235,8 +1233,9 @@ NESTED_NOPROFILE(MIPSX(kern_intr), KERNFRAME_SIZ, ra)
 #else
 	mfc0	v0, MIPS_COP_0_STATUS		# read it
 	MFC0_HAZARD
-	xor	v0, MIPS_SR_INT_IE		# disable interrupts
-	mtc0	v0, MIPS_COP_0_STATUS		# write it
+    ori v1, v0, MIPS_SR_INT_IE
+    xori    v1, v1, MIPS_SR_INT_IE
+    mtc0    v1, MIPS_COP_0_STATUS    # Disable interrupts
 #endif
 	COP0_SYNC
 
@@ -1594,9 +1593,9 @@ NESTED_NOPROFILE(MIPSX(user_intr), CALLFRAME_SIZ, ra)
 #else
 	mfc0	v1, MIPS_COP_0_STATUS
 	MFC0_HAZARD
-	and	v0, v1, MIPS_SR_INT_IE		# clear interrupt enable
-	xor	v0, v1
-	mtc0	v0, MIPS_COP_0_STATUS		# interrupts are disabled
+    ori v0, v1, MIPS_SR_INT_IE
+    xori    v0, v0, MIPS_SR_INT_IE
+    mtc0    v0, MIPS_COP_0_STATUS    # Disable interrupts
 #endif
 	COP0_SYNC
 
@@ -2086,7 +2085,9 @@ LEAF(MIPSX(tlb_update_addr))
 	di	ta0				# Disable interrupts
 #else
 	mfc0	ta0, MIPS_COP_0_STATUS		# Save the status register.
-	mtc0	zero, MIPS_COP_0_STATUS		# Disable interrupts
+    ori ta1, ta0, MIPS_SR_INT_IE
+    xori    ta1, ta1, MIPS_SR_INT_IE
+    mtc0    ta1, MIPS_COP_0_STATUS    # Disable interrupts
 #endif
 	COP0_SYNC
 #if (PGSHIFT & 1) == 0
@@ -2119,7 +2120,6 @@ LEAF(MIPSX(tlb_update_addr))
 	nop
 	nop					# required for QED5230
 #endif
-
 #if (PGSHIFT & 1)
 	bgez	v1, 1f				# index < 0 => !present
 	 REG_ADDU a2, a1, MIPS3_PG_NEXT
@@ -2212,7 +2212,9 @@ END(MIPSX(tlb_update_addr))
  */
 LEAF(MIPSX(tlb_read_entry))
 	mfc0	v1, MIPS_COP_0_STATUS		# Save the status register.
-	mtc0	zero, MIPS_COP_0_STATUS		# Disable interrupts
+    ori v0, v1, MIPS_SR_INT_IE
+    xori    v0, v0, MIPS_SR_INT_IE
+    mtc0    v0, MIPS_COP_0_STATUS    # Disable interrupts
 	COP0_SYNC
 #ifdef MIPS3
 	nop
@@ -2261,9 +2263,10 @@ END(MIPSX(tlb_read_entry))
  */
 LEAF_NOPROFILE(MIPSX(tlb_invalidate_addr))
 	mfc0	ta0, MIPS_COP_0_STATUS		# save status register
-	mtc0	zero, MIPS_COP_0_STATUS		# disable interrupts
+    ori ta1, ta0, MIPS_SR_INT_IE
+    xori    ta1, ta1, MIPS_SR_INT_IE
+    mtc0    ta1, MIPS_COP_0_STATUS    # Disable interrupts
 	COP0_SYNC
-
 #if (PGSHIFT & 1) == 0
 	_SRL	a2, a0, V_MIPS3_PG_ODDPG - V_MIPS3_PG_V
 	and	a2, MIPS3_PG_V			# lo0 V bit
@@ -2359,7 +2362,9 @@ END(MIPSX(tlb_invalidate_addr))
  */
 LEAF_NOPROFILE(MIPSX(tlb_invalidate_asids))
 	mfc0	v1, MIPS_COP_0_STATUS		# save status register
-	mtc0	zero, MIPS_COP_0_STATUS		# disable interrupts
+    ori v0, v1, MIPS_SR_INT_IE
+    xori    v0, v0, MIPS_SR_INT_IE
+    mtc0    v0, MIPS_COP_0_STATUS    # Disable interrupts
 	COP0_SYNC
 
 	_MFC0	t0, MIPS_COP_0_TLB_HI		# Save the current ASID.
@@ -2425,7 +2430,9 @@ END(MIPSX(tlb_invalidate_asids))
  */
 LEAF_NOPROFILE(MIPSX(tlb_invalidate_globals))
 	mfc0	v1, MIPS_COP_0_STATUS		# save status register
-	mtc0	zero, MIPS_COP_0_STATUS		# disable interrupts
+    ori v0, v1, MIPS_SR_INT_IE
+    xori    v0, ta1, MIPS_SR_INT_IE
+    mtc0    v0, MIPS_COP_0_STATUS    # Disable interrupts
 	COP0_SYNC
 
 	_MFC0	t0, MIPS_COP_0_TLB_HI		# save current ASID
