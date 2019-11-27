@@ -632,9 +632,7 @@ VECTOR(MIPSX(exception), unknown)
 #endif
 	.p2align 4
 MIPSX(nopagetable):
-	lui	k1, %hi(CPUVAR(CURLWP))		#10: k1=hi of curlwp
 	j	MIPSX(slowfault)		#11: no page table present
-	 PTR_L	k1, %lo(CPUVAR(CURLWP))(k1)	#12: k1=lo of curlwp
 	nop					#13: branch delay slot
 	.set	at
 _VECTOR_END(MIPSX(exception))
@@ -1360,6 +1358,8 @@ NESTED_NOPROFILE(MIPSX(user_gen_exception), CALLFRAME_SIZ, ra)
 	 */
 	KERN_ENTRY_ERRATA
 	/* K1 already has CURLWP */
+	dla k1, (CPUVAR(CURLWP))
+	ld 	k1, 0(k1) 	#0c: k1=lo of curlwp
 	PTR_L	k0, L_PCB(k1)			# XXXuvm_lwp_getuarea
 	PTR_ADDU k0, USPACE - TF_SIZ - CALLFRAME_SIZ
 	REG_S	AT, CALLFRAME_SIZ+TF_REG_AST(k0)
