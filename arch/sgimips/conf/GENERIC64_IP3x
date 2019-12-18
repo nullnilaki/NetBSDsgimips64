@@ -34,5 +34,5 @@ makeoptions	CPUFLAGS="-march=mips4 -mtune=r10000"
 
 # Compatibility options
 #include 	"conf/compat_netbsd15.config"
-
+options 	ENABLE_MIPS_16KB_PAGE
 #options 	COMPAT_LINUX	# binary compatibility with Linux
