@@ -3102,5 +3102,7 @@ MIPSX(excpt_sw):
 #else
 	PTR_WORD _C_LABEL(MIPSX(user_gen_exception))	# 31
 #endif
+#ifdef MIPS3_LOONGSON2
 loongson2_xtlb_miss_str:
 	.string "loongson2_xtlb_miss"
+#endif
