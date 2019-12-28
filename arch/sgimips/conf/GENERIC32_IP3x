@@ -157,7 +157,7 @@ options 	NFS_BOOT_DHCP,NFS_BOOT_BOOTPARAM
 # Kernel root file system and dump configuration.
 config		netbsd	root on ? type ?
 
-option      TGT_OCTANE      # Octane, Octane 2
+options      TGT_OCTANE      # Octane, Octane 2
 
 # Main bus and CPU
 mainbus0 	at root
