@@ -252,7 +252,9 @@ ioc3_serial_init(const char *consdev)
 #if (NCOM > 0)
 	const char     *dbaud;
 	int       speed;
-	bus_addr_t base, offs;
+    paddr_t base;
+    bus_addr_t offs;
+    bus_size_t len;
 
 	if ((strlen(consdev) == 9) && (!strncmp(consdev, "serial", 6)) &&
 	    (consdev[7] == '0' || consdev[7] == '1')) {
@@ -260,8 +262,19 @@ ioc3_serial_init(const char *consdev)
 		dbaud = arcbios_GetEnvironmentVariable("dbaud");
 		speed = strtoul(dbaud, NULL, 10);
 		offs = BRIDGE_PCI0_MEM_SPACE_BASE;
-		base = ip30_widget_map(0, IP30_BRIDGE_WIDGET, offs) + 0x500000;
+		len = BRIDGE_PCI_MEM_SPACE_LENGTH;
 
+	/*
+     * Initialize the early console parameters.
+     * On Octane, the BRIDGE is always widget 15, and IOC3 is always
+     * mapped in memory space at address 0x500000.
+     *
+     * Also, note that by using a direct widget bus_space, there is
+     * no endianness conversion done on the bus addresses. Which is
+     * exactly what we need, since the IOC3 doesn't need any. Some
+     * may consider this an evil abuse of bus_space knowledge, though.
+     */
+		base = (*xbow_widget_map)(0, IP30_BRIDGE_WIDGET, &offs, &len) + 0x500000;
 		/* Buffer cleaning */
 		delay(10000);
 
