@@ -19,6 +19,7 @@ file dev/arcbios/arcbios_calls.S
 file arch/sgimips/sgimips/arcemu.c
 
 file arch/sgimips/sgimips/ip22_cache.S		indy_r4600_cache
+file arch/sgimips/sgimips/ip30_machdep.c
 file arch/sgimips/sgimips/autoconf.c
 file arch/sgimips/sgimips/bus.c
 file arch/sgimips/sgimips/clock.c

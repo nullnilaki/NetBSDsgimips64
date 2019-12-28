@@ -45,3 +45,4 @@ extern int ncpus;
 
 void	makebootdev (const char *);
 
+void    ip30_setup(void);

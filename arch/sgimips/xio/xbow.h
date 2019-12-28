@@ -16,6 +16,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifndef _XBOW_H_
+#define _XBOW_H_
+
 /*
  * Devices connected to the XBow are called ``widgets'' and are
  * identified by a common widget memory area at the beginning of their
@@ -38,6 +41,17 @@
  * two parameters needed to map a widget.
  */
 
+extern  paddr_t (*xbow_widget_base)(int16_t, u_int);
+extern  paddr_t (*xbow_widget_map)(int16_t, u_int, bus_addr_t *, bus_size_t *);
+
+extern  int (*xbow_widget_id)(int16_t, u_int, uint32_t *);
+
+extern  int (*xbow_intr_widget_intr_register)(int, int, int *);
+extern  void    (*xbow_intr_widget_intr_disestablish)(int);
+
+extern  void    (*xbow_intr_widget_intr_set)(int);
+extern  void    (*xbow_intr_widget_intr_clear)(int);
+
 /*
  * Valid widget values
  */
@@ -45,4 +59,70 @@
 #define WIDGET_MIN          8
 #define WIDGET_MAX          15
 
+/* interrupt register address on the master hub */
+extern  uint64_t xbow_intr_address;
+
+struct xbow_attach_args {
+    int16_t     xaa_nasid;
+    int     xaa_widget;
+
+    uint32_t    xaa_vendor;
+    uint32_t    xaa_product;
+    uint32_t    xaa_revision;
+
+    bus_space_tag_t xaa_iot;
+    /*
+     * WARNING! xaa_iot points to memory allocated on the stack,
+     * drivers need to make a copy of it.
+     */
+};
+
 void    xbow_build_bus_space(struct mips_bus_space *, bus_addr_t);
+int xbow_intr_register(int, int, int *);
+void    xbow_intr_disestablish(int);
+void    xbow_intr_clear(int);
+void    xbow_intr_set(int);
+
+paddr_t xbow_widget_map_space(struct device *, u_int,
+        bus_addr_t *, bus_size_t *);
+
+int xbow_space_map(bus_space_tag_t, bus_addr_t, bus_size_t, int,
+        bus_space_handle_t *);
+uint8_t xbow_read_1(bus_space_tag_t, bus_space_handle_t, bus_size_t);
+uint16_t xbow_read_2(bus_space_tag_t, bus_space_handle_t, bus_size_t);
+void    xbow_read_raw_2(bus_space_tag_t, bus_space_handle_t, bus_addr_t,
+        uint8_t *, bus_size_t);
+void    xbow_write_1(bus_space_tag_t, bus_space_handle_t, bus_size_t, uint8_t);
+void    xbow_write_2(bus_space_tag_t, bus_space_handle_t, bus_size_t,
+        uint16_t);
+void    xbow_write_raw_2(bus_space_tag_t, bus_space_handle_t, bus_addr_t,
+        const uint8_t *, bus_size_t);
+
+/*
+ * Widget register access routines hiding addressing games depending upon
+ * the access width.
+ */
+static __inline__ uint32_t
+widget_read_4(bus_space_tag_t t, bus_space_handle_t h, bus_addr_t a)
+{
+    return bus_space_read_4(t, h, a | 4);
+}
+static __inline__ uint64_t
+widget_read_8(bus_space_tag_t t, bus_space_handle_t h, bus_addr_t a)
+{
+    return bus_space_read_8(t, h, a);
+}
+static __inline__ void
+widget_write_4(bus_space_tag_t t, bus_space_handle_t h, bus_addr_t a,
+    uint32_t v)
+{
+    bus_space_write_4(t, h, a | 4, v);
+}
+static __inline__ void
+widget_write_8(bus_space_tag_t t, bus_space_handle_t h, bus_addr_t a,
+    uint64_t v)
+{
+    bus_space_write_8(t, h, a, v);
+}
+
+#endif  /* _XBOW_H_ */

@@ -571,6 +571,7 @@ mach_init(int argc, char *argv[], uintptr_t magic, int32_t bip32)
 	case MACH_SGI_IP30:
 		ipl_sr_map = sgi_ip3x_ipl_sr_map;
 		platform.intr5 = mips3_clock_intr;
+        ip30_setup();
 		break;
 	case MACH_SGI_IP32:
 		ipl_sr_map = sgi_ip3x_ipl_sr_map;

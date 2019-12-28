@@ -91,6 +91,15 @@ static struct mips_bus_space    xbow_mbst;
 bus_space_tag_t xbow_memt = NULL;
 
 /*
+ * Function pointers to hide widget discovery and mapping differences accross
+ * systems.
+ */
+paddr_t (*xbow_widget_base)(int16_t, u_int);
+paddr_t (*xbow_widget_map)(int16_t, u_int, bus_addr_t *, bus_size_t *);
+
+int (*xbow_widget_id)(int16_t, u_int, uint32_t *);
+
+/*
  * Bus access primitives.
  */
 

@@ -89,27 +89,3 @@
 #define CCA_NC          2UL /* uncached, write-around */
 #define XKPHYS_BASE     0x8000000000000000UL
 #define PHYS_TO_XKPHYS(x,c) ((paddr_t)(x) | XKPHYS_BASE | ((c) << 59))
-
-paddr_t		ip30_widget_long(int16_t, u_int);
-
-paddr_t
-ip30_widget_long(int16_t nasid, u_int widget)
-{
-    return PHYS_TO_XKPHYS((uint64_t)(widget) << 36, CCA_NC);
-}
-
-paddr_t		ip30_widget_map(int16_t, u_int, bus_addr_t);
-
-paddr_t
-ip30_widget_map(int16_t nasid, u_int widget, bus_addr_t offs)
-{
-    paddr_t base;
-
-    /*
-     * On Octane, the whole widget space is always accessible.
-     */
-
-    base = ip30_widget_long(nasid, widget);
-
-    return base + offs;
-}
